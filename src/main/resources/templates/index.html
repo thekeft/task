@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="py-5 text-center">
+        <h5>[입력]</h5>
+    </div>
+
+    <form>
+
+        <div>
+            <label for="url">URL</label>
+            <input type="text" id="url"
+                   class="form-control" placeholder="url을 입력하세요">
+        </div>
+
+        <span>TYPE</span>
+        <select id="extractType" class="form-select">
+            <option value="EXCLUDE">HTML 태그 제외</option>
+            <option value="INCLUDE">Text 전체</option>
+        </select>
+
+        <div>
+            <label for="number">출력 단위 묶음</label>
+            <input type="text" id="number"
+                   class="form-control" placeholder="숫자를 입력하세요" value="100">
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="button" th:onclick="send()">출력</button>
+            </div>
+        </div>
+
+    </form>
+
+    <hr class="my-4">
+
+    <div class="py-5 text-center">
+        <h5>[출력]</h5>
+    </div>
+
+    <div id="afterCalculation">
+        <div for="number">몫</div>
+        <textarea type="text" id="quotient" th:text="${result?.quotient}"
+               class="form-control" rows="10" cols="100"></textarea>
+        <div for="number">나머지</div>
+        <textarea type="text" id="remainder" th:text="${result?.remainder}"
+                  class="form-control" rows="10" cols="100"></textarea>
+    </div>
+
+</div> <!-- /container -->
+
+</body>
+<script type="text/javascript">
+function send(){
+    const url =$('#url').val();
+    const extractType =$('#extractType').val();
+    const number =$('#number').val();
+    const sendDTO = {
+            url:url,
+            extractType:extractType,
+            number:number,
+    };
+    $.ajax({
+        url: "/url",
+        data: sendDTO,
+        type: 'GET',
+    }).done(function (data){
+        $("#afterCalculation").replaceWith(data);
+    }).fail(function (data){
+        alert(data.responseText);
+    });
+}
+</script>
+</html>
